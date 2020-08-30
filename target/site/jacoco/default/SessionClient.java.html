@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SessionClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ericsson</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">SessionClient.java</span></div><h1>SessionClient.java</h1><pre class="source lang-java linenums">import org.apache.log4j.BasicConfigurator;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+<span class="nc" id="L9">public class SessionClient {</span>
+    private static final String URL = &quot;http://127.0.0.1:8081/nbi/deliverysession?id=1&quot;;
+    public static void main(String[] args) {
+
+        //To deal with the error &quot;No appenders could be found for logger&quot;
+<span class="nc" id="L14">        BasicConfigurator.configure();</span>
+
+//        HttpClient client = HttpClient.newBuilder()
+//                .version(HttpClient.Version.HTTP_1_1)
+//                .build();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .POST(HttpRequest.BodyPublishers.noBody())
+//                .header(&quot;accept&quot;,&quot;text/plain&quot;)
+//                .uri(URI.create(URL))
+//                .build();
+//        try {
+//            HttpResponse&lt;String&gt; response =  client.send(request, HttpResponse.BodyHandlers.ofString());
+//            System.out.println(response.headers());
+//            System.out.println(response.statusCode());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+<span class="nc" id="L33">        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,&quot;TMGI&quot;,1,4,&quot;a&quot;);</span>
+<span class="nc" id="L34">        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
+<span class="nc" id="L35">        deliverySession.setTimer();</span>
+
+<span class="nc" id="L37">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
