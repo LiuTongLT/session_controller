@@ -14,6 +14,73 @@
 <h1>客户端 - Session Client</h1>
 
 <h1>服务器端 - Session Server</h1>
-<p></p>
-<>
+<p>若未安装Python，可在官网下载Python： <a href="https://www.python.org/downloads/" target="_blank">下载Python</a>。根据电脑的Python版本执行server.py(以Python3为例):</p>
+<pre>
+<code>$ python3 server.py</code>
+</pre>
 <h1>测试 - Test</h1>
+<h2>单元测试</h2>
+<p>本项目测试了：</p>
+<ol>
+  <li>单线程发送会话</li>
+  <li>多线程发送会话，使用了线程池进行多线程并发发送会话</li>
+</ol>
+<h2>代码覆盖率</h2>
+<p>本项目代码覆盖率：<strong>74%</strong>。</p>
+<p>本项目使用了JaCoCo-Maven插件进行代码覆盖率检测。第一步需要电脑安装Maven，第二步在pox.xml中声明Jacoco插件。</p>
+<h3>安装Maven（Mac OS版本）</h3>
+<p>从官网下载Maven：<a href="https://maven.apache.org/download.cgi" target="_blank">下载Maven</a></p>
+<p>配置环境：</p>
+<pre>
+<code>vi ~/.bash_profile</code>
+</pre>
+<p>添加路径</p>
+<pre>
+<code>
+export MVN_HOME=/...(Maven解压的路径).../apache-maven-3.6.3
+export PATH=$PATH:$MVN_HOME/bin
+<code>
+</pre>
+<p>重新加载配置以及</p>
+<pre>
+<code>source ~/.bash_profile</code>
+</pre>
+<p>兼容zsh</p>
+<pre>
+<code>
+vim ~/.zshrc
+# 在.zshrc最后添加
+source ~/.bash_profile 
+</code>
+</pre>
+<p>测试Maven</p>
+<pre>
+<code>mvn -v</code>
+</pre>
+<p>安装Maven on linux可参考：<a href="https://blog.csdn.net/qq_38270106/article/details/97764483" target="_blank">Linux安装Maven</a></p>
+<h3>在pox.xml配置JaCoCo插件(本项目的pox.xml中已配置)</h3>
+<pre>
+<code>
+<plugin>
+  <groupId>org.jacoco</groupId>
+  <artifactId>jacoco-maven-plugin</artifactId>
+  <version>0.8.2</version>
+  <executions>
+    <execution>
+      <goals>
+        <goal>prepare-agent</goal>
+      </goals>
+     </execution>
+     <!-- attached to Maven test phase -->
+     <execution>
+      <id>report</id>
+      <phase>test</phase>
+      <goals>
+        <goal>report</goal>
+      </goals>
+     </execution>
+  </executions>
+</plugin>
+</code>
+</pre>
+
