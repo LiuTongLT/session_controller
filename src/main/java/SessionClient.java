@@ -22,13 +22,12 @@ public class SessionClient {
     public void singleSession(){
         DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,4,"a");
         DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
-        deliverySession.setTimer();
+        deliverySession.setTimerSync();
     }
 
-    public void multipleSessions(){
+    public void multipleSessionsSync(){
         // concurrent requests (Threads number)
         int concurrent = 50;
-
         // using CountDownLatch to make sure that the main thread does not exit until all threads finish
         CountDownLatch countDownLatch = new CountDownLatch(concurrent);
         ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);
@@ -42,7 +41,7 @@ public class SessionClient {
                 public void run() {
                     try {
                         DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
-                        deliverySession.setTimer();
+                        deliverySession.setTimerSync();
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -75,7 +74,7 @@ public class SessionClient {
                 public void run() {
                     try {
                         DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
-                        deliverySession.setTimer();
+                        deliverySession.setTimerSync();
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -99,7 +98,42 @@ public class SessionClient {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
+    public void mutipleThreadsAsync(){
+        // concurrent requests (Threads number)
+        int concurrent = 10;
+        // using CountDownLatch to make sure that the main thread does not exit until all threads finish
+        CountDownLatch countDownLatch = new CountDownLatch(concurrent);
+        ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);
+        int concurrentPer = concurrent;
+
+        AtomicInteger sessionId = new AtomicInteger(0);
+        //Thread pool submit requests
+        for(int i = 0; i < concurrentPer; i++) {
+            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(sessionId.getAndIncrement(),ActionType.Start,"TMGI",i,i+5,"a");
+            //sessionId.getAndIncrement();
+            threadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
+                        deliverySession.setTimerAsync();
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                }
+            });
+        }
+        try {
+            countDownLatch.await();
+            threadPool.shutdown();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

@@ -9,7 +9,7 @@
 <ul>
 <li>DeliverySessionCreation: 会话原始类，封装了一个会话的信息；</li>
 <li>DeliverySession: 为DeliverySessionCreation提供定时器；</li>
-<li>SessionRequest: 作为会话的定时任务，将DeliverySessionCreation的信息发送给Server；</li>
+<li>RequestTaskSync: 作为会话的定时任务，将DeliverySessionCreation的信息发送给Server；</li>
 </ul>
 <h1>客户端 - Session Client</h1>
 

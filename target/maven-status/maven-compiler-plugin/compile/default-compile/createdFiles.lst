@@ -1,5 +1,10 @@
 ActionType.class
-DeliverySessionCreation.class
 SessionClient.class
-RequestTask.class
+SessionClient$3.class
+SessionClient$1.class
 DeliverySession.class
+RequestTaskSync.class
+SessionClient$2.class
+RequestTaskSync$1.class
+DeliverySessionCreation.class
+RequestTaskAsync.class

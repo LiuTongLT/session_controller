@@ -18,13 +18,18 @@ public class SessionClientTest {
         sessionClient.singleSession();
     }
     @Test
-    public void multipleThreadTest(){
+    public void multipleThreadSyncTest(){
         SessionClient sessionClient = new SessionClient();
-        sessionClient.multipleSessions();
+        sessionClient.multipleSessionsSync();
     }
     @Test
     public void dynamicThreadPoll() throws InterruptedException {
         SessionClient sessionClient = new SessionClient();
         sessionClient.multipleSessionsWithDynamicPool(25);
+    }
+    @Test
+    public void asyncRequest(){
+        SessionClient sessionClient = new SessionClient();
+        sessionClient.mutipleThreadsAsync();
     }
 }

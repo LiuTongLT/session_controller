@@ -1,7 +1,5 @@
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -17,16 +15,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.*;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
 
 
-public class SessionRequest extends TimerTask {
+public class RequestTaskSync extends TimerTask {
 
-    private Logger logger = Logger.getLogger(RequestTask.class);
+    private Logger logger = Logger.getLogger(RequestTaskAsync.class);
     private static SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static JAXBContext jaxbContext;
 
@@ -41,7 +37,7 @@ public class SessionRequest extends TimerTask {
     private DeliverySessionCreation deliverySessionCreation;
     private StringBuilder URL = new StringBuilder("http://127.0.0.1:8081/nbi/deliverysession?id=");
 
-    public SessionRequest(DeliverySessionCreation deliverySessionCreation){
+    public RequestTaskSync(DeliverySessionCreation deliverySessionCreation){
         this.deliverySessionCreation = deliverySessionCreation;
         URL.append(deliverySessionCreation.getDeliverySessionId());
     }
@@ -97,5 +93,7 @@ public class SessionRequest extends TimerTask {
         }
 
     }
+
+
 
 }

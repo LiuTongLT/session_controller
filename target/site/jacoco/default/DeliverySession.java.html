@@ -2,27 +2,47 @@
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+
 public class DeliverySession {
     private DeliverySessionCreation deliverySessionCreation;
     private Timer timer;
 
-<span class="fc" id="L9">    public DeliverySession(DeliverySessionCreation deliverySessionCreation){</span>
-<span class="fc" id="L10">        this.deliverySessionCreation = deliverySessionCreation;</span>
-<span class="fc" id="L11">        timer = new Timer();</span>
+<span class="nc" id="L10">    public DeliverySession(){}</span>
 
-<span class="fc" id="L13">    }</span>
-    public void setTimer(){
-<span class="fc" id="L15">        CountDownLatch latch = new CountDownLatch(1);</span>
-<span class="fc" id="L16">        RequestTask task1 = new RequestTask(deliverySessionCreation);</span>
-<span class="fc" id="L17">        RequestTask task2 = new RequestTask(deliverySessionCreation);</span>
-<span class="fc" id="L18">        timer.schedule(task1, deliverySessionCreation.getStartTime()*1000);</span>
-<span class="fc" id="L19">        timer.schedule(task2, deliverySessionCreation.getStopTime()*1000);</span>
+<span class="fc" id="L12">    public DeliverySession(DeliverySessionCreation deliverySessionCreation){</span>
+<span class="fc" id="L13">        this.deliverySessionCreation = deliverySessionCreation;</span>
+<span class="fc" id="L14">        timer = new Timer();</span>
+
+<span class="fc" id="L16">    }</span>
+    public void setTimerSync(){
+<span class="fc" id="L18">        CountDownLatch latch = new CountDownLatch(1);</span>
+<span class="fc" id="L19">        RequestTaskSync start = new RequestTaskSync(deliverySessionCreation);</span>
+<span class="fc" id="L20">        RequestTaskSync stop = new RequestTaskSync(deliverySessionCreation);</span>
+<span class="fc" id="L21">        timer.schedule(start, deliverySessionCreation.getStartTime()*1000);</span>
+<span class="fc" id="L22">        timer.schedule(stop, deliverySessionCreation.getStopTime()*1000);</span>
+
+        //In order to use test unit, the thread should wait for the time schedule events
         try {
-<span class="fc" id="L21">            latch.await(20, TimeUnit.SECONDS);</span>
-<span class="nc" id="L22">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L23">            e.printStackTrace();</span>
-<span class="fc" id="L24">        }</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L26">            latch.await(20, TimeUnit.SECONDS);</span>
+<span class="nc" id="L27">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L28">            e.printStackTrace();</span>
+<span class="fc" id="L29">        }</span>
+<span class="fc" id="L30">    }</span>
+
+    public void setTimerAsync(){
+<span class="fc" id="L33">        CountDownLatch latch = new CountDownLatch(1);</span>
+<span class="fc" id="L34">        RequestTaskAsync start = new RequestTaskAsync(deliverySessionCreation);</span>
+<span class="fc" id="L35">        RequestTaskAsync stop = new RequestTaskAsync(deliverySessionCreation);</span>
+<span class="fc" id="L36">        timer.schedule(start, deliverySessionCreation.getStartTime()*1000);</span>
+<span class="fc" id="L37">        timer.schedule(stop, deliverySessionCreation.getStopTime()*1000);</span>
+
+        //In order to use test unit, the thread should wait for the time schedule events
+        try {
+<span class="fc" id="L41">            latch.await(20, TimeUnit.SECONDS);</span>
+<span class="nc" id="L42">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L43">            e.printStackTrace();</span>
+<span class="fc" id="L44">        }</span>
+<span class="fc" id="L45">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
