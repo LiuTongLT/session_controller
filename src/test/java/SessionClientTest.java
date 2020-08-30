@@ -14,42 +14,17 @@ public class SessionClientTest {
     }
     @Test
     public void singleThreadTest(){
-        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,4,"a");
-        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
-        deliverySession.setTimer();
-
+        SessionClient sessionClient = new SessionClient();
+        sessionClient.singleSession();
     }
     @Test
     public void multipleThreadTest(){
-        int concurrent = 50; // concurrent requests
-        CountDownLatch countDownLatch = new CountDownLatch(concurrent);
-        ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);
-        int concurrentPer = concurrent;
-        //Thread pool submit requests
-        for(int i = 0; i < concurrentPer; i++) {
-            threadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,4,"a");
-                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
-                        deliverySession.setTimer();
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        countDownLatch.countDown();
-                    }
-                }
-            });
-
-        }
-        try {
-            countDownLatch.await();
-            threadPool.shutdown();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        SessionClient sessionClient = new SessionClient();
+        sessionClient.multipleSessions();
     }
-
+    @Test
+    public void dynamicThreadPoll() throws InterruptedException {
+        SessionClient sessionClient = new SessionClient();
+        sessionClient.multipleSessionsWithDynamicPool(25);
+    }
 }

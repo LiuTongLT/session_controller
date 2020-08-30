@@ -11,7 +11,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
-import org.apache.log4j.pattern.LogEvent;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
