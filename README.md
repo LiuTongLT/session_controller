@@ -35,42 +35,16 @@
 <code>vi ~/.bash_profile</code>
 </pre>
 <p>添加路径</p>
-<pre>
-<code>
-export MVN_HOME=/...(Maven解压的路径).../apache-maven-3.6.3
-export PATH=$PATH:$MVN_HOME/bin
-<code>
-</pre>
-<p>重新加载配置以及</p>
-<pre>
-<code>source ~/.bash_profile</code>
-</pre>
+<pre><code>export MVN_HOME=/...(Maven解压的路径).../apache-maven-3.6.3
+export PATH=$PATH:$MVN_HOME/bin<code></pre>
+<p>重新加载配置</p>
+<pre><code>source ~/.bash_profile</code></pre>
 <p>兼容zsh</p>
 <pre><code>vim ~/.zshrc
-# 在.zshrc最后添加
+#在.zshrc最后添加
 source ~/.bash_profile </code></pre>
 <p>测试Maven</p>
 <pre><code>mvn -v</code></pre>
 <p>安装Maven on linux可参考：<a href="https://blog.csdn.net/qq_38270106/article/details/97764483" target="_blank">Linux安装Maven</a></p>
 <h3>在pox.xml配置JaCoCo插件(本项目的pox.xml中已配置)</h3>
-<pre><code><plugin>
-  <groupId>org.jacoco</groupId>
-  <artifactId>jacoco-maven-plugin</artifactId>
-  <version>0.8.2</version>
-  <executions>
-    <execution>
-      <goals>
-        <goal>prepare-agent</goal>
-      </goals>
-     </execution>
-     <!-- attached to Maven test phase -->
-     <execution>
-      <id>report</id>
-      <phase>test</phase>
-      <goals>
-        <goal>report</goal>
-      </goals>
-     </execution>
-  </executions>
-</plugin></code></pre>
 
