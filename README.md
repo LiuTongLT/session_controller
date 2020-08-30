@@ -34,7 +34,7 @@
 <pre><code>vi ~/.bash_profile</code></pre>
 <p>添加路径</p>
 <pre><code>export MVN_HOME=/...(Maven解压的路径).../apache-maven-3.6.3
-export PATH=$PATH:$MVN_HOME/bin<code></pre>
+export PATH=$PATH:$MVN_HOME/bin</code></pre>
 <p>重新加载配置</p>
 <pre><code>source ~/.bash_profile</code></pre>
 <p>兼容zsh</p>
