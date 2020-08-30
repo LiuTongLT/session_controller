@@ -28,12 +28,10 @@
 <h2>代码覆盖率</h2>
 <p>本项目代码覆盖率：<strong>74%</strong>。</p>
 <p>本项目使用了JaCoCo-Maven插件进行代码覆盖率检测。第一步需要电脑安装Maven，第二步在pox.xml中声明Jacoco插件。</p>
-<h3>安装Maven（Mac OS版本）</h3>
+<h3>安装Maven（Mac OS版本)</h3>
 <p>从官网下载Maven：<a href="https://maven.apache.org/download.cgi" target="_blank">下载Maven</a></p>
 <p>配置环境：</p>
-<pre>
-<code>vi ~/.bash_profile</code>
-</pre>
+<pre><code>vi ~/.bash_profile</code></pre>
 <p>添加路径</p>
 <pre><code>export MVN_HOME=/...(Maven解压的路径).../apache-maven-3.6.3
 export PATH=$PATH:$MVN_HOME/bin<code></pre>
