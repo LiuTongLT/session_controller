@@ -46,22 +46,14 @@ export PATH=$PATH:$MVN_HOME/bin
 <code>source ~/.bash_profile</code>
 </pre>
 <p>兼容zsh</p>
-<pre>
-<code>
-vim ~/.zshrc
+<pre><code>vim ~/.zshrc
 # 在.zshrc最后添加
-source ~/.bash_profile 
-</code>
-</pre>
+source ~/.bash_profile </code></pre>
 <p>测试Maven</p>
-<pre>
-<code>mvn -v</code>
-</pre>
+<pre><code>mvn -v</code></pre>
 <p>安装Maven on linux可参考：<a href="https://blog.csdn.net/qq_38270106/article/details/97764483" target="_blank">Linux安装Maven</a></p>
 <h3>在pox.xml配置JaCoCo插件(本项目的pox.xml中已配置)</h3>
-<pre>
-<code>
-<plugin>
+<pre><code><plugin>
   <groupId>org.jacoco</groupId>
   <artifactId>jacoco-maven-plugin</artifactId>
   <version>0.8.2</version>
@@ -80,7 +72,5 @@ source ~/.bash_profile
       </goals>
      </execution>
   </executions>
-</plugin>
-</code>
-</pre>
+</plugin></code></pre>
 
