@@ -43,6 +43,7 @@
 <pre>
 <code>$ python3 server.py</code>
 </pre>
+<img src="src/main/upload/server_response.png">
 
 
 <h1>测试 - Test</h1>
