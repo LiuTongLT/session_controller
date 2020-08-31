@@ -16,125 +16,149 @@ import java.util.concurrent.atomic.AtomicInteger;
         //To deal with the error &quot;No appenders could be found for logger&quot;
 <span class="nc" id="L17">        BasicConfigurator.configure();</span>
 <span class="nc" id="L18">        SessionClient sessionClient = new SessionClient();</span>
-<span class="nc" id="L19">        sessionClient.singleSession();</span>
+<span class="nc" id="L19">        sessionClient.setStopTimeSingleT(10);</span>
+        //sessionClient.mutipleThreadsAsync();
 
-<span class="nc" id="L21">    }</span>
+<span class="nc" id="L22">    }</span>
     public void singleSession(){
-<span class="fc" id="L23">        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,&quot;TMGI&quot;,1,4,&quot;a&quot;);</span>
-<span class="fc" id="L24">        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
-<span class="fc" id="L25">        deliverySession.setTimerSync();</span>
-<span class="fc" id="L26">    }</span>
+<span class="fc" id="L24">        CountDownLatch latch = new CountDownLatch(1);</span>
+<span class="fc" id="L25">        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,&quot;TMGI&quot;,1,6,&quot;a&quot;);</span>
+<span class="fc" id="L26">        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
+<span class="fc" id="L27">        deliverySession.setTimerSync();</span>
+        try {
+<span class="fc" id="L29">            latch.await(20, TimeUnit.SECONDS);</span>
+<span class="nc" id="L30">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L31">            e.printStackTrace();</span>
+<span class="fc" id="L32">        }</span>
+<span class="fc" id="L33">    }</span>
 
     public void multipleSessionsSync(){
         // concurrent requests (Threads number)
-<span class="fc" id="L30">        int concurrent = 50;</span>
+<span class="fc" id="L37">        int concurrent = 50;</span>
         // using CountDownLatch to make sure that the main thread does not exit until all threads finish
-<span class="fc" id="L32">        CountDownLatch countDownLatch = new CountDownLatch(concurrent);</span>
-<span class="fc" id="L33">        ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);</span>
-<span class="fc" id="L34">        int concurrentPer = concurrent;</span>
+<span class="fc" id="L39">        CountDownLatch countDownLatch = new CountDownLatch(concurrent);</span>
+<span class="fc" id="L40">        ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);</span>
+<span class="fc" id="L41">        int concurrentPer = concurrent;</span>
 
         //Thread pool submit requests
-<span class="fc bfc" id="L37" title="All 2 branches covered.">        for(int i = 0; i &lt; concurrentPer; i++) {</span>
-<span class="fc" id="L38">            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(i,ActionType.Start,&quot;TMGI&quot;,i,i+5,&quot;a&quot;);</span>
-<span class="fc" id="L39">            threadPool.execute(new Runnable() {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for(int i = 0; i &lt; concurrentPer; i++) {</span>
+<span class="fc" id="L45">            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(i,ActionType.Start,&quot;TMGI&quot;,i,i+5,&quot;a&quot;);</span>
+<span class="fc" id="L46">            threadPool.execute(new Runnable() {</span>
                 @Override
                 public void run() {
                     try {
-<span class="fc" id="L43">                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
-<span class="fc" id="L44">                        deliverySession.setTimerSync();</span>
-<span class="fc" id="L45">                        Thread.sleep(100);</span>
-<span class="nc" id="L46">                    } catch (InterruptedException e) {</span>
-<span class="nc" id="L47">                        e.printStackTrace();</span>
+<span class="fc" id="L50">                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
+<span class="fc" id="L51">                        deliverySession.setTimerSync();</span>
+<span class="fc" id="L52">                        Thread.sleep(100);</span>
+<span class="nc" id="L53">                    } catch (InterruptedException e) {</span>
+<span class="nc" id="L54">                        e.printStackTrace();</span>
                     } finally {
-<span class="fc" id="L49">                        countDownLatch.countDown();</span>
+<span class="fc" id="L56">                        countDownLatch.countDown();</span>
                     }
-<span class="fc" id="L51">                }</span>
+<span class="fc" id="L58">                }</span>
             });
         }
         try {
-<span class="fc" id="L55">            countDownLatch.await();</span>
-<span class="fc" id="L56">            threadPool.shutdown();</span>
-<span class="nc" id="L57">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L58">            e.printStackTrace();</span>
-<span class="fc" id="L59">        }</span>
-<span class="fc" id="L60">    }</span>
+<span class="fc" id="L62">            countDownLatch.await();</span>
+<span class="fc" id="L63">            threadPool.shutdown();</span>
+<span class="nc" id="L64">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L65">            e.printStackTrace();</span>
+<span class="fc" id="L66">        }</span>
+<span class="fc" id="L67">    }</span>
 
     public void multipleSessionsWithDynamicPool(int numberOfSessions) throws InterruptedException {
-<span class="fc" id="L63">        ThreadPoolExecutor executor = new ThreadPoolExecutor(5,</span>
+<span class="fc" id="L70">        ThreadPoolExecutor executor = new ThreadPoolExecutor(5,</span>
                 10,
                 60,
                 TimeUnit.SECONDS,
                 new LinkedBlockingDeque&lt;&gt;(100));
         //AtomicInteger sessionId = new AtomicInteger(0);
-<span class="fc" id="L69">        CountDownLatch countDownLatch = new CountDownLatch(numberOfSessions);</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">        for(int i=0; i&lt;numberOfSessions; i++){</span>
-<span class="fc" id="L71">            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(i,ActionType.Start,&quot;TMGI&quot;,i,i+5,&quot;a&quot;);</span>
-<span class="fc" id="L72">            executor.submit(new Runnable() {</span>
+<span class="fc" id="L76">        CountDownLatch countDownLatch = new CountDownLatch(numberOfSessions);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for(int i=0; i&lt;numberOfSessions; i++){</span>
+<span class="fc" id="L78">            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(i,ActionType.Start,&quot;TMGI&quot;,i,i+5,&quot;a&quot;);</span>
+<span class="fc" id="L79">            executor.submit(new Runnable() {</span>
                 @Override
                 public void run() {
                     try {
-<span class="fc" id="L76">                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
-<span class="fc" id="L77">                        deliverySession.setTimerSync();</span>
-<span class="fc" id="L78">                        Thread.sleep(100);</span>
-<span class="nc" id="L79">                    } catch (InterruptedException e) {</span>
-<span class="nc" id="L80">                        e.printStackTrace();</span>
+<span class="fc" id="L83">                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
+<span class="fc" id="L84">                        deliverySession.setTimerSync();</span>
+<span class="fc" id="L85">                        Thread.sleep(100);</span>
+<span class="nc" id="L86">                    } catch (InterruptedException e) {</span>
+<span class="nc" id="L87">                        e.printStackTrace();</span>
                     } finally {
-<span class="fc" id="L82">                        countDownLatch.countDown();</span>
+<span class="fc" id="L89">                        countDownLatch.countDown();</span>
                     }
-<span class="fc" id="L84">                }</span>
+<span class="fc" id="L91">                }</span>
             });
         }
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if(numberOfSessions&gt;20){</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if(numberOfSessions&gt;20){</span>
             //if the new core pool size is larger than old max pool size, we should firstly set the max pool size
-<span class="fc" id="L89">            executor.setMaximumPoolSize(20);</span>
-<span class="fc" id="L90">            executor.setCorePoolSize(20);</span>
-<span class="fc" id="L91">            executor.prestartAllCoreThreads();</span>
-<span class="fc" id="L92">            System.out.println(&quot;Max thread number: &quot;+executor.getMaximumPoolSize());</span>
+<span class="fc" id="L96">            executor.setMaximumPoolSize(20);</span>
+<span class="fc" id="L97">            executor.setCorePoolSize(20);</span>
+<span class="fc" id="L98">            executor.prestartAllCoreThreads();</span>
+<span class="fc" id="L99">            System.out.println(&quot;Max thread number: &quot;+executor.getMaximumPoolSize());</span>
         }
 
         try {
-<span class="fc" id="L96">            countDownLatch.await();</span>
-<span class="fc" id="L97">            executor.shutdown();</span>
-<span class="nc" id="L98">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L99">            e.printStackTrace();</span>
-<span class="fc" id="L100">        }</span>
-<span class="fc" id="L101">    }</span>
+<span class="fc" id="L103">            countDownLatch.await();</span>
+<span class="fc" id="L104">            executor.shutdown();</span>
+<span class="nc" id="L105">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L106">            e.printStackTrace();</span>
+<span class="fc" id="L107">        }</span>
+<span class="fc" id="L108">    }</span>
 
     public void mutipleThreadsAsync(){
         // concurrent requests (Threads number)
-<span class="fc" id="L105">        int concurrent = 10;</span>
+<span class="fc" id="L112">        int concurrent = 10;</span>
         // using CountDownLatch to make sure that the main thread does not exit until all threads finish
-<span class="fc" id="L107">        CountDownLatch countDownLatch = new CountDownLatch(concurrent);</span>
-<span class="fc" id="L108">        ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);</span>
-<span class="fc" id="L109">        int concurrentPer = concurrent;</span>
+<span class="fc" id="L114">        CountDownLatch countDownLatch = new CountDownLatch(concurrent);</span>
+<span class="fc" id="L115">        ExecutorService threadPool = Executors.newFixedThreadPool(concurrent);</span>
+<span class="fc" id="L116">        int concurrentPer = concurrent;</span>
 
-<span class="fc" id="L111">        AtomicInteger sessionId = new AtomicInteger(0);</span>
+<span class="fc" id="L118">        AtomicInteger sessionId = new AtomicInteger(0);</span>
         //Thread pool submit requests
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        for(int i = 0; i &lt; concurrentPer; i++) {</span>
-<span class="fc" id="L114">            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(sessionId.getAndIncrement(),ActionType.Start,&quot;TMGI&quot;,i,i+5,&quot;a&quot;);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        for(int i = 0; i &lt; concurrentPer; i++) {</span>
+<span class="fc" id="L121">            DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(sessionId.getAndIncrement(),ActionType.Start,&quot;TMGI&quot;,i,i+5,&quot;a&quot;);</span>
             //sessionId.getAndIncrement();
-<span class="fc" id="L116">            threadPool.execute(new Runnable() {</span>
+<span class="fc" id="L123">            threadPool.execute(new Runnable() {</span>
                 @Override
                 public void run() {
                     try {
-<span class="fc" id="L120">                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
-<span class="fc" id="L121">                        deliverySession.setTimerAsync();</span>
-<span class="fc" id="L122">                        Thread.sleep(100);</span>
-<span class="nc" id="L123">                    } catch (InterruptedException e) {</span>
-<span class="nc" id="L124">                        e.printStackTrace();</span>
+<span class="fc" id="L127">                        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
+<span class="fc" id="L128">                        deliverySession.setTimerAsync();</span>
+<span class="fc" id="L129">                        Thread.sleep(100);</span>
+<span class="nc" id="L130">                    } catch (InterruptedException e) {</span>
+<span class="nc" id="L131">                        e.printStackTrace();</span>
                     } finally {
-<span class="fc" id="L126">                        countDownLatch.countDown();</span>
+<span class="fc" id="L133">                        countDownLatch.countDown();</span>
                     }
-<span class="fc" id="L128">                }</span>
+<span class="fc" id="L135">                }</span>
             });
         }
         try {
-<span class="fc" id="L132">            countDownLatch.await();</span>
-<span class="fc" id="L133">            threadPool.shutdown();</span>
-<span class="nc" id="L134">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L135">            e.printStackTrace();</span>
-<span class="fc" id="L136">        }</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L139">            countDownLatch.await();</span>
+<span class="fc" id="L140">            threadPool.shutdown();</span>
+<span class="nc" id="L141">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L142">            e.printStackTrace();</span>
+<span class="fc" id="L143">        }</span>
+<span class="fc" id="L144">    }</span>
+
+    public boolean setStopTimeSingleT(int s){
+<span class="fc" id="L147">        CountDownLatch latch = new CountDownLatch(1);</span>
+<span class="fc" id="L148">        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,&quot;TMGI&quot;,1,20,&quot;a&quot;);</span>
+<span class="fc" id="L149">        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);</span>
+<span class="fc" id="L150">        deliverySession.setTimerSync();</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if(deliverySession.setStopTime(s)){</span>
+<span class="fc" id="L152">            System.out.println(&quot;true&quot;);</span>
+            try {
+<span class="fc" id="L154">                latch.await(20, TimeUnit.SECONDS);</span>
+<span class="nc" id="L155">            } catch (InterruptedException e) {</span>
+<span class="nc" id="L156">                e.printStackTrace();</span>
+<span class="fc" id="L157">            }</span>
+<span class="fc" id="L158">            return true;</span>
+        }
+<span class="nc" id="L160">        return false;</span>
+    }
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

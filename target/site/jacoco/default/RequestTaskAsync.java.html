@@ -16,95 +16,79 @@ import java.util.concurrent.CompletableFuture;
 public class RequestTaskAsync extends TimerTask {
 <span class="fc" id="L17">    private Logger logger = Logger.getLogger(RequestTaskAsync.class);</span>
 <span class="fc" id="L18">    private static SimpleDateFormat df=new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
-    static JAXBContext jaxbContext;
-
-    static{
-        try {
-<span class="fc" id="L23">            jaxbContext = JAXBContext.newInstance(DeliverySessionCreation.class);</span>
-<span class="nc" id="L24">        } catch (JAXBException e) {</span>
-<span class="nc" id="L25">            e.printStackTrace();</span>
-<span class="fc" id="L26">        }</span>
-<span class="fc" id="L27">    }</span>
-
+    private JAXBContext jaxbContext;
 
     private DeliverySessionCreation deliverySessionCreation;
-<span class="fc" id="L31">    private StringBuilder URL = new StringBuilder(&quot;http://127.0.0.1:8081/nbi/deliverysession?id=&quot;);</span>
+<span class="fc" id="L22">    private StringBuilder URL = new StringBuilder(&quot;http://127.0.0.1:8081/nbi/deliverysession?id=&quot;);</span>
 
-<span class="fc" id="L33">    public RequestTaskAsync(DeliverySessionCreation deliverySessionCreation){</span>
-<span class="fc" id="L34">        this.deliverySessionCreation = deliverySessionCreation;</span>
-<span class="fc" id="L35">        URL.append(deliverySessionCreation.getDeliverySessionId());</span>
-<span class="fc" id="L36">    }</span>
+<span class="fc" id="L24">    public RequestTaskAsync(DeliverySessionCreation deliverySessionCreation){</span>
+<span class="fc" id="L25">        this.deliverySessionCreation = deliverySessionCreation;</span>
+<span class="fc" id="L26">        URL.append(deliverySessionCreation.getDeliverySessionId());</span>
+        try {
+<span class="fc" id="L28">            jaxbContext = JAXBContext.newInstance(DeliverySessionCreation.class);</span>
+<span class="nc" id="L29">        } catch (JAXBException e) {</span>
+<span class="nc" id="L30">            e.printStackTrace();</span>
+<span class="fc" id="L31">        }</span>
+<span class="fc" id="L32">    }</span>
     @Override
     public void run() {
-<span class="fc" id="L39">        requestAsyn();</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L35">        requestAsyn();</span>
+<span class="fc" id="L36">    }</span>
 
     public void requestAsyn(){
-<span class="fc" id="L43">        logger.info(&quot;--------------send request---------------&quot;);</span>
-<span class="fc" id="L44">        logger.info(&quot;DeliverySession id: &quot;+deliverySessionCreation.getDeliverySessionId()+&quot;; Send time: &quot;+df.format(new Date(System.currentTimeMillis()))+&quot;; Action type: &quot;+deliverySessionCreation.getAction());</span>
+<span class="fc" id="L39">        logger.info(&quot;--------------send request---------------&quot;);</span>
+<span class="fc" id="L40">        logger.info(&quot;DeliverySession id: &quot;+deliverySessionCreation.getDeliverySessionId()+&quot;; Send time: &quot;+df.format(new Date(System.currentTimeMillis()))+&quot;; Action type: &quot;+deliverySessionCreation.getAction());</span>
         //logger.info(&quot;Send time: &quot;+ df.format(new Date(System.currentTimeMillis())));
 
-<span class="fc" id="L47">        HttpClient client =  null;</span>
-<span class="fc" id="L48">        HttpRequest request = null;</span>
-<span class="fc" id="L49">        Marshaller marshaller = null;</span>
+<span class="fc" id="L43">        HttpClient client =  null;</span>
+<span class="fc" id="L44">        HttpRequest request = null;</span>
+<span class="fc" id="L45">        Marshaller marshaller = null;</span>
         try {
-<span class="fc" id="L51">            marshaller =  jaxbContext.createMarshaller();</span>
-<span class="fc" id="L52">            File file = new File(&quot;src/main/resources/sessions.xsd&quot;);</span>
-<span class="fc" id="L53">            marshaller.marshal(deliverySessionCreation,file);</span>
+<span class="fc" id="L47">            marshaller =  jaxbContext.createMarshaller();</span>
+<span class="fc" id="L48">            File file = new File(&quot;src/main/resources/sessions.xsd&quot;);</span>
+<span class="fc" id="L49">            marshaller.marshal(deliverySessionCreation,file);</span>
             //parse .xsd file to string
-<span class="fc" id="L55">            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));</span>
+<span class="fc" id="L51">            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));</span>
             String line;
-<span class="fc" id="L57">            StringBuilder bodySB = new StringBuilder();</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">            while((line=bufferedReader.readLine())!=null){</span>
-<span class="fc" id="L59">                bodySB.append(line);</span>
+<span class="fc" id="L53">            StringBuilder bodySB = new StringBuilder();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            while((line=bufferedReader.readLine())!=null){</span>
+<span class="fc" id="L55">                bodySB.append(line);</span>
             }
 
-<span class="fc" id="L62">            request = HttpRequest.newBuilder()</span>
-<span class="fc" id="L63">                    .POST(HttpRequest.BodyPublishers.ofString(bodySB.toString()))</span>
-<span class="fc" id="L64">                    .uri(URI.create(URL.toString()))</span>
-<span class="fc" id="L65">                    .build();</span>
-<span class="fc" id="L66">            logger.info(&quot;Request body: &quot;+bodySB.toString());</span>
+<span class="fc" id="L58">            request = HttpRequest.newBuilder()</span>
+<span class="fc" id="L59">                    .POST(HttpRequest.BodyPublishers.ofString(bodySB.toString()))</span>
+<span class="fc" id="L60">                    .uri(URI.create(URL.toString()))</span>
+<span class="fc" id="L61">                    .build();</span>
+<span class="fc" id="L62">            logger.info(&quot;Request body: &quot;+bodySB.toString());</span>
 
-<span class="fc" id="L68">            client = HttpClient.newBuilder()</span>
-<span class="fc" id="L69">                    .version(HttpClient.Version.HTTP_1_1)</span>
-<span class="fc" id="L70">                    .build();</span>
-<span class="fc" id="L71">            CompletableFuture&lt;HttpResponse&lt;String&gt;&gt; response =  client.sendAsync(request, HttpResponse.BodyHandlers.ofString());</span>
-<span class="fc" id="L72">            logger.info(&quot;--------------Receive response------------&quot;);</span>
-<span class="fc" id="L73">            HttpResponse&lt;String&gt; res =  response.get();</span>
-<span class="fc" id="L74">            logger.info(&quot;Response for delivery session: &quot;+deliverySessionCreation.getDeliverySessionId() +&quot;; Response code: &quot;+res.statusCode()+&quot;; Response header: &quot;+ res.headers());</span>
+<span class="fc" id="L64">            client = HttpClient.newBuilder()</span>
+<span class="fc" id="L65">                    .version(HttpClient.Version.HTTP_1_1)</span>
+<span class="fc" id="L66">                    .build();</span>
+<span class="fc" id="L67">            CompletableFuture&lt;HttpResponse&lt;String&gt;&gt; responseFuture =  client.sendAsync(request, HttpResponse.BodyHandlers.ofString());</span>
+<span class="fc" id="L68">            logger.info(&quot;--------------Receive response------------&quot;);</span>
 
-<span class="fc bfc" id="L76" title="All 2 branches covered.">            if(deliverySessionCreation.getAction().equals(ActionType.Start)){</span>
-<span class="fc" id="L77">                deliverySessionCreation.setAction(ActionType.Stop);</span>
+<span class="fc" id="L70">            responseFuture.whenComplete((res, error)-&gt;{</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                if(res!=null){</span>
+<span class="fc" id="L72">                    logger.info(&quot;Response for delivery session: &quot;+deliverySessionCreation.getDeliverySessionId() +&quot;; Response code: &quot;+res.statusCode()+&quot;; Response header: &quot;+ res.headers());</span>
+                }
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                if(error!=null){</span>
+<span class="fc" id="L75">                    error.printStackTrace();</span>
+                }
+<span class="fc" id="L77">            });</span>
+            //HttpResponse&lt;String&gt; res =  responseFuture.get();
+            //logger.info(&quot;Response for delivery session: &quot;+deliverySessionCreation.getDeliverySessionId() +&quot;; Response code: &quot;+res.statusCode()+&quot;; Response header: &quot;+ res.headers());
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if(deliverySessionCreation.getAction().equals(ActionType.Start)){</span>
+<span class="fc" id="L82">                deliverySessionCreation.setAction(ActionType.Stop);</span>
             }
-<span class="fc" id="L79">        } catch (Exception e) {</span>
-<span class="fc" id="L80">            e.printStackTrace();</span>
-<span class="fc" id="L81">        }</span>
-<span class="fc" id="L82">    }</span>
+<span class="nc" id="L84">        } catch (Exception e) {</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
+<span class="fc" id="L86">        }</span>
+<span class="fc" id="L87">    }</span>
 
     public void requestSync(){
-<span class="nc" id="L85">        logger.info(&quot;--------------send request---------------&quot;);</span>
-<span class="nc" id="L86">        logger.info(&quot;DeliverySession id: &quot;+deliverySessionCreation.getDeliverySessionId()+&quot;; Send time: &quot;+df.format(new Date(System.currentTimeMillis())));</span>
-        //logger.info(&quot;Send time: &quot;+ df.format(new Date(System.currentTimeMillis())));
 
-<span class="nc" id="L89">        HttpClient client = null;</span>
-<span class="nc" id="L90">        HttpRequest request = null;</span>
-        try {
-<span class="nc" id="L92">            request = HttpRequest.newBuilder()</span>
-<span class="nc" id="L93">                    .POST(HttpRequest.BodyPublishers.noBody())</span>
-<span class="nc" id="L94">                    .header(&quot;accept&quot;,&quot;text/plain&quot;)</span>
-<span class="nc" id="L95">                    .uri(URI.create(URL.toString()))</span>
-<span class="nc" id="L96">                    .build();</span>
-<span class="nc" id="L97">            client = HttpClient.newBuilder()</span>
-<span class="nc" id="L98">                    .version(HttpClient.Version.HTTP_1_1)</span>
-<span class="nc" id="L99">                    .build();</span>
-<span class="nc" id="L100">            HttpResponse&lt;String&gt; response =  client.send(request, HttpResponse.BodyHandlers.ofString());</span>
-<span class="nc" id="L101">            logger.info(&quot;--------------Receive response------------&quot;);</span>
-<span class="nc" id="L102">            logger.info(&quot;Response for delivery session: &quot;+deliverySessionCreation.getDeliverySessionId() +&quot;; Response code: &quot;+response.statusCode()+&quot;; Response header: &quot;+ response.headers());</span>
-
-<span class="nc" id="L104">        } catch (Exception e) {</span>
-<span class="nc" id="L105">            e.printStackTrace();</span>
-<span class="nc" id="L106">        }</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L91">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

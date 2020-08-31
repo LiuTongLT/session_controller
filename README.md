@@ -13,6 +13,7 @@
 
 <h1>客户端 - Session Client</h1>
 <h2>Class介绍以及UML</h2>
+<img src="src/main/upload/UML_Session.png"/>
 <ul>
 <li>DeliverySessionCreation: 会话原始类，封装了一个会话的信息；</li>
 <li>DeliverySession: 为DeliverySessionCreation提供定时器；</li>
@@ -46,13 +47,17 @@
 
 <h1>测试 - Test</h1>
 <h2>单元测试</h2>
-<p>本项目测试了：</p>
+<p>由于会话请求都是定时任务，所以使用单元测试的时候，如果定时任务在@Test方法返回之前还没有执行，@Tes方法会直接退出，不会执行定时任务，所以本项目在SessionClient中的各方法中使用了CountDownLatch来保证主线程在本项Session线程退出之后再退出。本项目测试了：</p>
 <ol>
-  <li>单线程发送会话</li>
-  <li>多线程发送会话，使用了线程池进行多线程并发发送会话</li>
+  <li>单线程发送会话：singleThreadTest()</li>
+  <li>多线程发送会话，使用了线程池进行多线程并发发送会话: multipleThreadSyncTest()</li>
+  <li>多线程，动态调整线程池参数: dynamicThreadPoll</li>
+  <li>异步请求：asyncRequest()</li>
+  <li>动态调整会话Stop时间：setStopTimeSync()</li>
 </ol>
 <h2>代码覆盖率</h2>
 <p>本项目代码覆盖率：<strong>74%</strong>。</p>
+<img src="src/main/upload/cover_rate.png">
 <p>本项目使用了JaCoCo-Maven插件进行代码覆盖率检测。第一步需要电脑安装Maven，第二步在pox.xml中声明Jacoco插件。</p>
 <h3>安装Maven（Mac OS版本)</h3>
 <p>从官网下载Maven：<a href="https://maven.apache.org/download.cgi" target="_blank">下载Maven</a></p>
@@ -73,3 +78,5 @@ source ~/.bash_profile </code></pre>
 <h3>在pox.xml配置JaCoCo插件(本项目的pox.xml中已配置)</h3>
 <h3>测试代码覆盖率</h3>
 <pre><code>mvn clean test</code></pre>
+<h3>查看代码覆盖率</h3>
+<p>打开target/site/jacoco/路径下的index.html即可查看具体信息。</p>

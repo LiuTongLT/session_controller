@@ -17,12 +17,24 @@ public class SessionClient {
         BasicConfigurator.configure();
         SessionClient sessionClient = new SessionClient();
         sessionClient.setStopTimeSingleT(10);
-
+        sessionClient.multipleSessionsSync();
+        try {
+            sessionClient.multipleSessionsWithDynamicPool(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sessionClient.mutipleThreadsAsync();
     }
     public void singleSession(){
+        CountDownLatch latch = new CountDownLatch(1);
         DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,6,"a");
         DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
         deliverySession.setTimerSync();
+        try {
+            latch.await(20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void multipleSessionsSync(){
@@ -137,11 +149,17 @@ public class SessionClient {
     }
 
     public boolean setStopTimeSingleT(int s){
+        CountDownLatch latch = new CountDownLatch(1);
         DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,20,"a");
         DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
         deliverySession.setTimerSync();
         if(deliverySession.setStopTime(s)){
             System.out.println("true");
+            try {
+                latch.await(20, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return true;
         }
         return false;

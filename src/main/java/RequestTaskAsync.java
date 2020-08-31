@@ -64,10 +64,19 @@ public class RequestTaskAsync extends TimerTask {
             client = HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_1_1)
                     .build();
-            CompletableFuture<HttpResponse<String>> response =  client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            CompletableFuture<HttpResponse<String>> responseFuture =  client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
             logger.info("--------------Receive response------------");
-            HttpResponse<String> res =  response.get();
-            logger.info("Response for delivery session: "+deliverySessionCreation.getDeliverySessionId() +"; Response code: "+res.statusCode()+"; Response header: "+ res.headers());
+
+            responseFuture.whenComplete((res, error)->{
+                if(res!=null){
+                    logger.info("Response for delivery session: "+deliverySessionCreation.getDeliverySessionId() +"; Response code: "+res.statusCode()+"; Response header: "+ res.headers());
+                }
+                if(error!=null){
+                    error.printStackTrace();
+                }
+            });
+            //HttpResponse<String> res =  responseFuture.get();
+            //logger.info("Response for delivery session: "+deliverySessionCreation.getDeliverySessionId() +"; Response code: "+res.statusCode()+"; Response header: "+ res.headers());
 
             if(deliverySessionCreation.getAction().equals(ActionType.Start)){
                 deliverySessionCreation.setAction(ActionType.Stop);

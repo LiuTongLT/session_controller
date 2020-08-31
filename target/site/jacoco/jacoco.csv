@@ -1,11 +1,11 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 ericsson,default,ActionType,0,24,0,0,0,3,0,1,0,1
-ericsson,default,DeliverySession,9,99,0,0,5,20,1,3,1,3
-ericsson,default,SessionClient,17,185,1,7,10,42,2,8,1,5
+ericsson,default,DeliverySession,6,129,1,1,3,25,2,4,1,4
+ericsson,default,SessionClient,27,233,2,8,15,54,3,9,1,6
 ericsson,default,SessionClient.new Runnable() {...},3,26,0,0,2,6,0,2,0,2
-ericsson,default,RequestTaskAsync,67,163,0,4,21,42,1,6,1,4
+ericsson,default,RequestTaskAsync,7,170,0,8,5,43,1,9,1,5
 ericsson,default,SessionClient.new Runnable() {...},3,26,0,0,2,6,0,2,0,2
 ericsson,default,RequestTaskSync.new ResponseHandler() {...},0,31,0,0,0,6,0,2,0,2
 ericsson,default,SessionClient.new Runnable() {...},3,26,0,0,2,6,0,2,0,2
-ericsson,default,DeliverySessionCreation,29,37,0,0,13,14,8,6,8,6
-ericsson,default,RequestTaskSync,7,155,0,4,4,37,0,5,0,3
+ericsson,default,DeliverySessionCreation,25,41,0,0,11,16,7,7,7,7
+ericsson,default,RequestTaskSync,7,175,0,4,4,41,0,5,0,3

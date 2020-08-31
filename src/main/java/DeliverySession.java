@@ -8,6 +8,8 @@ public class DeliverySession {
     private Timer timer;
     RequestTaskSync startSync;
     RequestTaskSync stopSync;
+    RequestTaskAsync startAsync;
+    RequestTaskAsync stopAsync;
 
     public DeliverySession(){}
 
@@ -16,6 +18,8 @@ public class DeliverySession {
         timer = new Timer();
         startSync = new RequestTaskSync(deliverySessionCreation);
         stopSync = new RequestTaskSync(deliverySessionCreation);
+        startAsync = new RequestTaskAsync(deliverySessionCreation);
+        stopAsync = new RequestTaskAsync(deliverySessionCreation);
 
     }
     public void setTimerSync(){
@@ -33,10 +37,9 @@ public class DeliverySession {
 
     public void setTimerAsync(){
         CountDownLatch latch = new CountDownLatch(1);
-        RequestTaskAsync start = new RequestTaskAsync(deliverySessionCreation);
-        RequestTaskAsync stop = new RequestTaskAsync(deliverySessionCreation);
-        timer.schedule(start, deliverySessionCreation.getStartTime()*1000);
-        timer.schedule(stop, deliverySessionCreation.getStopTime()*1000);
+
+        timer.schedule(startAsync, deliverySessionCreation.getStartTime()*1000);
+        timer.schedule(stopAsync, deliverySessionCreation.getStopTime()*1000);
 
         //In order to use test unit, the thread should wait for the time schedule events
         try {
