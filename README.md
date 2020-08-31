@@ -13,7 +13,7 @@
 
 <h1>客户端 - Session Client</h1>
 <h2>Class介绍以及UML</h2>
-![image](https://github.com/LiuTongLT/session_controller/blob/master/src/main/upload/UML_Session.png)
+<img src= "https://github.com/LiuTongLT/session_controller/blob/master/src/main/upload/UML_Session.png">
 <ul>
 <li>DeliverySessionCreation: 会话原始类，封装了一个会话的信息；</li>
 <li>DeliverySession: 为DeliverySessionCreation提供定时器；</li>
@@ -56,7 +56,7 @@
   <li>动态调整会话Stop时间：setStopTimeSync()</li>
 </ol>
 <h2>代码覆盖率</h2>
-<p>本项目代码覆盖率：<strong>74%</strong>。</p>
+<p>本项目代码覆盖率：<strong>91%</strong>。</p>
 <img src="src/main/upload/cover_rate.png">
 <p>本项目使用了JaCoCo-Maven插件进行代码覆盖率检测。第一步需要电脑安装Maven，第二步在pox.xml中声明Jacoco插件。</p>
 <h3>安装Maven（Mac OS版本)</h3>
