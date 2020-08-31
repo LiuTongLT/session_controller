@@ -13,7 +13,7 @@
 
 <h1>客户端 - Session Client</h1>
 <h2>Class介绍以及UML</h2>
-<img src="src/main/upload/UML_Session.png"/>
+![image](https://github.com/LiuTongLT/session_controller/blob/master/src/main/upload/UML_Session.png)
 <ul>
 <li>DeliverySessionCreation: 会话原始类，封装了一个会话的信息；</li>
 <li>DeliverySession: 为DeliverySessionCreation提供定时器；</li>
