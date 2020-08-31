@@ -16,11 +16,11 @@ public class SessionClient {
         //To deal with the error "No appenders could be found for logger"
         BasicConfigurator.configure();
         SessionClient sessionClient = new SessionClient();
-        sessionClient.singleSession();
+        sessionClient.setStopTimeSingleT(10);
 
     }
     public void singleSession(){
-        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,4,"a");
+        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,6,"a");
         DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
         deliverySession.setTimerSync();
     }
@@ -134,6 +134,17 @@ public class SessionClient {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean setStopTimeSingleT(int s){
+        DeliverySessionCreation deliverySessionCreation = new DeliverySessionCreation(1,ActionType.Start,"TMGI",1,20,"a");
+        DeliverySession deliverySession = new DeliverySession(deliverySessionCreation);
+        deliverySession.setTimerSync();
+        if(deliverySession.setStopTime(s)){
+            System.out.println("true");
+            return true;
+        }
+        return false;
     }
 }
 

@@ -32,4 +32,9 @@ public class SessionClientTest {
         SessionClient sessionClient = new SessionClient();
         sessionClient.mutipleThreadsAsync();
     }
+    @Test
+    public void setStopTimeSync(){
+        SessionClient sessionClient = new SessionClient();
+        System.out.println(sessionClient.setStopTimeSingleT(15));
+    }
 }

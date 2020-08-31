@@ -1,3 +1,4 @@
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -8,6 +9,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 
 import javax.xml.bind.JAXBContext;
@@ -22,17 +24,9 @@ import java.util.TimerTask;
 
 public class RequestTaskSync extends TimerTask {
 
-    private Logger logger = Logger.getLogger(RequestTaskAsync.class);
+    private Logger logger = Logger.getLogger(RequestTaskSync.class);
     private static SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    static JAXBContext jaxbContext;
-
-    static{
-        try {
-            jaxbContext = JAXBContext.newInstance(DeliverySessionCreation.class);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-    }
+    private JAXBContext jaxbContext;
 
     private DeliverySessionCreation deliverySessionCreation;
     private StringBuilder URL = new StringBuilder("http://127.0.0.1:8081/nbi/deliverysession?id=");
@@ -40,6 +34,11 @@ public class RequestTaskSync extends TimerTask {
     public RequestTaskSync(DeliverySessionCreation deliverySessionCreation){
         this.deliverySessionCreation = deliverySessionCreation;
         URL.append(deliverySessionCreation.getDeliverySessionId());
+        try {
+            jaxbContext = JAXBContext.newInstance(DeliverySessionCreation.class);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -50,7 +49,13 @@ public class RequestTaskSync extends TimerTask {
         Marshaller marshaller = null;
         HttpUriRequest httpUriRequest = null;
         CloseableHttpClient closeableHttpClient = null;
+        PoolingHttpClientConnectionManager manager = null;
         try {
+            manager = new PoolingHttpClientConnectionManager();
+            //The max connections
+            manager.setMaxTotal(200);
+            //The max num of connections per route
+            manager.setDefaultMaxPerRoute(100);
             //create the .xsd file using marshaller
             marshaller =  jaxbContext.createMarshaller();
             File file = new File("src/main/resources/sessions.xsd");
@@ -64,9 +69,10 @@ public class RequestTaskSync extends TimerTask {
             }
             httpUriRequest = RequestBuilder.post()
                     .setUri(URI.create(URL.toString()))
+                    .setHeader("Connection","keep-alive")
                     .setEntity(new StringEntity(bodySB.toString(), ContentType.APPLICATION_XML))
                     .build();
-            closeableHttpClient = HttpClients.createDefault();
+            closeableHttpClient = HttpClients.custom().setConnectionManager(manager).build();
 
             logger.info("Request body: "+bodySB.toString());
 
@@ -93,7 +99,4 @@ public class RequestTaskSync extends TimerTask {
         }
 
     }
-
-
-
 }

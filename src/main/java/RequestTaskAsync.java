@@ -16,16 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public class RequestTaskAsync extends TimerTask {
     private Logger logger = Logger.getLogger(RequestTaskAsync.class);
     private static SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    static JAXBContext jaxbContext;
-
-    static{
-        try {
-            jaxbContext = JAXBContext.newInstance(DeliverySessionCreation.class);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-    }
-
+    private JAXBContext jaxbContext;
 
     private DeliverySessionCreation deliverySessionCreation;
     private StringBuilder URL = new StringBuilder("http://127.0.0.1:8081/nbi/deliverysession?id=");
@@ -33,6 +24,11 @@ public class RequestTaskAsync extends TimerTask {
     public RequestTaskAsync(DeliverySessionCreation deliverySessionCreation){
         this.deliverySessionCreation = deliverySessionCreation;
         URL.append(deliverySessionCreation.getDeliverySessionId());
+        try {
+            jaxbContext = JAXBContext.newInstance(DeliverySessionCreation.class);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void run() {
@@ -82,28 +78,7 @@ public class RequestTaskAsync extends TimerTask {
     }
 
     public void requestSync(){
-        logger.info("--------------send request---------------");
-        logger.info("DeliverySession id: "+deliverySessionCreation.getDeliverySessionId()+"; Send time: "+df.format(new Date(System.currentTimeMillis())));
-        //logger.info("Send time: "+ df.format(new Date(System.currentTimeMillis())));
 
-        HttpClient client = null;
-        HttpRequest request = null;
-        try {
-            request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.noBody())
-                    .header("accept","text/plain")
-                    .uri(URI.create(URL.toString()))
-                    .build();
-            client = HttpClient.newBuilder()
-                    .version(HttpClient.Version.HTTP_1_1)
-                    .build();
-            HttpResponse<String> response =  client.send(request, HttpResponse.BodyHandlers.ofString());
-            logger.info("--------------Receive response------------");
-            logger.info("Response for delivery session: "+deliverySessionCreation.getDeliverySessionId() +"; Response code: "+response.statusCode()+"; Response header: "+ response.headers());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }
